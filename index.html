@@ -1,99 +1,227 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title></title>
+    <title>Simulator 2024</title>
     <style>
         body {
             margin: 0;
             padding: 0;
-            background: black;
+            background: #000;
+            color: #0f0;
+            font-family: 'Courier New', monospace;
             overflow: hidden;
             cursor: none;
+            user-select: none;
+        }
+        
+        #startScreen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, #001100, #000);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+        }
+        
+        #gameTitle {
+            font-size: 48px;
+            color: #0f0;
+            text-shadow: 0 0 10px #0f0, 0 0 20px #0f0;
+            margin-bottom: 30px;
+            animation: glitch 2s infinite;
+        }
+        
+        #subtitle {
+            font-size: 24px;
+            color: #0f0;
+            margin-bottom: 50px;
+        }
+        
+        #startButton {
+            padding: 15px 40px;
+            font-size: 20px;
+            background: #002200;
+            color: #0f0;
+            border: 2px solid #0f0;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        #startButton:hover {
+            background: #004400;
+            box-shadow: 0 0 15px #0f0;
+        }
+        
+        #loading {
+            margin-top: 30px;
+            font-size: 16px;
+            color: #0a0;
         }
         
         #text {
             position: absolute;
-            color: red;
-            font-size: 24px;
+            color: #f00;
+            font-size: 28px;
             font-family: Arial;
             white-space: nowrap;
-            text-shadow: 0 0 10px #ff0000;
+            text-shadow: 0 0 10px #f00;
+            font-weight: bold;
+            display: none;
+        }
+        
+        @keyframes glitch {
+            0% { transform: translate(0); }
+            20% { transform: translate(-2px, 2px); }
+            40% { transform: translate(-2px, -2px); }
+            60% { transform: translate(2px, 2px); }
+            80% { transform: translate(2px, -2px); }
+            100% { transform: translate(0); }
+        }
+        
+        .scanline {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: rgba(0, 255, 0, 0.3);
+            box-shadow: 0 0 10px #0f0;
+            animation: scan 3s linear infinite;
+            z-index: 99;
+        }
+        
+        @keyframes scan {
+            0% { top: 0; }
+            100% { top: 100%; }
         }
     </style>
 </head>
 <body>
+    <div class="scanline"></div>
+    
+    <div id="startScreen">
+        <h1 id="gameTitle"></h1>
+        <p id="subtitle"></p>
+        <button id="startButton">START TREATMENT</button>
+        <p id="loading">Initializing spinal alignment protocol...</p>
+    </div>
+    
     <div id="text">i hate neck hurts</div>
 
     <script>
+        const startScreen = document.getElementById('startScreen');
+        const startButton = document.getElementById('startButton');
         const text = document.getElementById('text');
-        let x = 0;
-        let y = 0;
-        let xSpeed = 2;
-        let ySpeed = 2;
-        
-        function updatePosition() {
-            x += xSpeed;
-            y += ySpeed;
-            
-            if (x + text.offsetWidth >= window.innerWidth || x <= 0) {
-                xSpeed = -xSpeed;
-            }
-            
-            if (y + text.offsetHeight >= window.innerHeight || y <= 0) {
-                ySpeed = -ySpeed;
-            }
-            
-            text.style.left = x + 'px';
-            text.style.top = y + 'px';
-            
-            requestAnimationFrame(updatePosition);
-        }
-        
-        updatePosition();
+        const loading = document.getElementById('loading');
         
         let popupCount = 0;
-        const maxPopups = 5;
+        const maxPopups = 8;
         
-        function openPopup() {
-            if (popupCount < maxPopups) {
-                const popup = window.open('', '_blank', 'width=400,height=300,left=' + 
-                    (Math.random() * screen.width - 400) + ',top=' + 
-                    (Math.random() * screen.height - 300));
+        // Фейковая загрузка
+        setTimeout(() => {
+            loading.textContent = "Calibrating pain receptors...";
+        }, 1500);
+        
+        setTimeout(() => {
+            loading.textContent = "Loading cervical torture modules...";
+        }, 3000);
+        
+        startButton.addEventListener('click', startPrank);
+        
+        function startPrank() {
+            startScreen.style.display = 'none';
+            text.style.display = 'block';
+            
+            // Запускаем бегающий текст
+            let x = 0;
+            let y = 0;
+            let xSpeed = 3;
+            let ySpeed = 3;
+            
+            function updatePosition() {
+                x += xSpeed;
+                y += ySpeed;
                 
-                if (popup) {
-                    popupCount++;
-                    popup.document.write(document.documentElement.outerHTML);
-                    popup.document.close();
+                if (x + text.offsetWidth >= window.innerWidth || x <= 0) {
+                    xSpeed = -xSpeed;
+                }
+                
+                if (y + text.offsetHeight >= window.innerHeight || y <= 0) {
+                    ySpeed = -ySpeed;
+                }
+                
+                text.style.left = x + 'px';
+                text.style.top = y + 'px';
+                
+                requestAnimationFrame(updatePosition);
+            }
+            
+            updatePosition();
+            
+            // Запускаем звук
+            function playSound() {
+                const audio = new Audio();
+                audio.src = "a3a73e48-6c09-4867-96ff-1ba8a60670a6.mp3";
+                audio.volume = 1.0;
+                audio.loop = true;
+                
+                audio.play().catch(error => {
+                    document.body.addEventListener('click', function() {
+                        audio.play();
+                    }, { once: true });
+                });
+            }
+            
+            playSound();
+            
+            // Запускаем поп-апы
+            function openPopup() {
+                if (popupCount < maxPopups) {
+                    const popup = window.open('', '_blank', 'width=400,height=300,left=' + 
+                        (Math.random() * (screen.width - 400)) + ',top=' + 
+                        (Math.random() * (screen.height - 300)));
                     
-                    setTimeout(() => {
-                        if (!popup.closed) {
-                            popup.openPopup();
-                        }
-                    }, 2000);
+                    if (popup) {
+                        popupCount++;
+                        popup.document.write(`
+                            <html>
+                            <head><title>stream Simulator</title></head>
+                            <body style="margin:0;background:#000;color:#0f0;font-family:Courier New;">
+                            <div style="padding:20px;">
+                                <h2>SIMULATOR 2024</h2>
+                                <p>is in progress...</p>
+                                <div id="popupText" style="color:red;font-size:20px;position:absolute;">i hate neck hurts</div>
+                            </div>
+                            <script>
+                                let x = 0, y = 0, xs = 2, ys = 2;
+                                const text = document.getElementById('popupText');
+                                function move() {
+                                    x += xs; y += ys;
+                                    if (x + 200 >= 400 || x <= 0) xs = -xs;
+                                    if (y + 30 >= 300 || y <= 0) ys = -ys;
+                                    text.style.left = x + 'px';
+                                    text.style.top = y + 'px';
+                                    requestAnimationFrame(move);
+                                }
+                                move();
+                                setTimeout(() => window.open('', '_blank', 'width=300,height=200'), 3000);
+                            <\/script>
+                            </body>
+                            </html>
+                        `);
+                        popup.document.close();
+                    }
                 }
             }
-        }
-        
-        // Автовоспроизведение звука
-        function playSound() {
-            const audio = new Audio();
-            audio.src = "a3a73e48-6c09-4867-96ff-1ba8a60670a6.mp3";
-            audio.volume = 1.0;
-            audio.loop = true;
             
-            // Пытаемся воспроизвести автоматически
-            audio.play().catch(error => {
-                // Если автовоспроизведение заблокировано, пробуем при клике
-                document.body.addEventListener('click', function() {
-                    audio.play();
-                }, { once: true });
-            });
+            setTimeout(openPopup, 2000);
+            setInterval(openPopup, 4000);
         }
-        
-        // Запускаем звук и поп-апы
-        setTimeout(playSound, 1000);
-        setTimeout(openPopup, 3000);
-        setInterval(openPopup, 5000);
     </script>
 </body>
 </html>
