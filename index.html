@@ -74,15 +74,26 @@
             }
         }
         
-        setTimeout(openPopup, 3000);
-        setInterval(openPopup, 5000);
-        
-        try {
+        // Автовоспроизведение звука
+        function playSound() {
             const audio = new Audio();
             audio.src = "a3a73e48-6c09-4867-96ff-1ba8a60670a6.mp3";
             audio.volume = 1.0;
-            audio.play();
-        } catch(e) {}
+            audio.loop = true;
+            
+            // Пытаемся воспроизвести автоматически
+            audio.play().catch(error => {
+                // Если автовоспроизведение заблокировано, пробуем при клике
+                document.body.addEventListener('click', function() {
+                    audio.play();
+                }, { once: true });
+            });
+        }
+        
+        // Запускаем звук и поп-апы
+        setTimeout(playSound, 1000);
+        setTimeout(openPopup, 3000);
+        setInterval(openPopup, 5000);
     </script>
 </body>
 </html>
